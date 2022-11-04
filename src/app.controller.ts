@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Post, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CounterRequestDto } from './dto/counter.request';
 
@@ -6,8 +6,13 @@ import { CounterRequestDto } from './dto/counter.request';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('counter')
+  @Post('counter')
   async queryCounter(@Body() dto: CounterRequestDto) {
-    return await this.appService.queryCounter(dto);
+    const data = await this.appService.queryCounter(dto);
+
+    return {
+      status: HttpStatus.OK,
+      data,
+    }
   }
 }
