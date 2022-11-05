@@ -7,6 +7,39 @@ import PrismaService from './prisma/prisma.service';
 export class AppService {
   constructor(private readonly db: PrismaService) {}
 
+  async getMfgOrder() {
+    const result = await this.db.mfgOrder.findMany({
+      select: {
+        MfgOrderId: true,
+        MfgOrderName: true,
+        Description: true,
+      }
+    });
+
+    return result;
+  }
+
+  async getResourceGroup() {
+    const result = await this.db.resourceGroup.findMany({
+      select: {
+        ResourceGroupId: true,
+        ResourceGroupName: true,
+        Description: true,
+      },
+      where: {
+        NOT: {
+          ResourceGroupName: {
+            contains: 'CARRIER'
+          }
+        },
+        ResourceGroupName: {
+          contains: 'BW01'
+        }
+      }
+    });
+    return result;
+  }
+
   async queryCounter({ resourceGroup, mfgOrder, fromDate, toDate }: CounterRequestDto) {
     let resultMerged: any[];
 
